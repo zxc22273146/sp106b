@@ -1,6 +1,14 @@
+# nand2tetris
+
+# windows
+*.exe
+
 # linux
 *.o
 *.log
+a.out
+
+*.bak
 
 # VisualStudio generate
 Release
@@ -56,3 +64,5 @@ java
 package-lock.json
 *.wasm
 *.wast
+*.exe
+*.obj
