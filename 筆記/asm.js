@@ -17,14 +17,13 @@ function assemble(asmFile, objFile) {
   var count = 0;
   var r = [];
 
-  c.log(ss[2]);
-
   while (count < n) {
     if (ss[count] == "D") {
     r.push("find");
     }
     else
     count = count+1;
+    c.log(count);
   }
   c.log(r);
 }
