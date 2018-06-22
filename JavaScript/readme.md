@@ -1,3 +1,5 @@
+組譯器輸出
+
 ```
 C:\Users\a\Desktop\sp106b\JavaScript>node Assembler.js Add
 @2
