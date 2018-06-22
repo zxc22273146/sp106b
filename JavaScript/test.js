@@ -10,9 +10,9 @@ d = c.split("=");
 console.log(d);*/
 
 var x = [];
-x.push('1');
-x.push('2');
-x = x.join(" ");
-console.log(x.length);
+x.push('H');
+x.push('I');
+x = x.join("");
 x = parseInt(x);
-x = x.toString(2);
+if(isNaN(x))
+console.log("OK!");

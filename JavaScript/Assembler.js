@@ -81,6 +81,14 @@ var symTable = {
   "SCREEN":'16384'
 };
 
+var symTop = 16;
+var symlocation = 0;
+
+function addSymbol(symbol) { //增加變數
+  symTable[symbol] = symTop; //將新的變數放進 symTable 裡面
+  symTop ++; 
+}
+
 assemble(file+'.asm', file+'.hack'); //開檔案
 
 function assemble(asmFile, objFile){ //主程式
@@ -88,10 +96,9 @@ function assemble(asmFile, objFile){ //主程式
                           
   var lines = asmText.split(/\r?\n/);
   //var sss = JSON.stringify(lines, null, 2);
-  //c.log(sss);
-  //var x = lines.toString();//檢查用
-  var x = lines.join(" ");
-  c.log(x);//檢查用
+  //c.log(sss); //這2行用途是印出全部內容，並以換行符號分隔
+  var x = lines.join(" "); //將文字檔用空白符號分隔
+  //c.log(x); //檢查用
   var count = 0;
 
   while(count<x.length){
@@ -108,7 +115,7 @@ function assemble(asmFile, objFile){ //主程式
     else if(x[count] == "A" || x[count] == "D" || x[count] == "M" || x[count] == "0"){
       if(x[count+1] == "=" || x[count+1] == ";"){
         r.push(x[count]);
-        r.push(x[count+1]); //通常是"="符號
+        r.push(x[count+1]); //"="符號
         count++;
         while(x[count+1] != " " && count<x.length){
           r.push(x[count+1]);
@@ -116,6 +123,13 @@ function assemble(asmFile, objFile){ //主程式
         }
         insC(r);
         }
+    }
+    else if(x[count] == "("){
+      while(x[count+1] != ")"){
+        r.push(x[count+1]);
+        count++;
+      }
+      sym(r);
     }
     else if(x[count] == "/"){ //將註解消除
       if(x[count+3] != " ")
@@ -128,7 +142,6 @@ function assemble(asmFile, objFile){ //主程式
         r.length = 0;
     }
     count++;
-    //c.log(r);//檢查用
   }
 }
 
@@ -137,8 +150,23 @@ function insA(r){ //A指令
     var n = r.shift(); //移除陣列中的"@"符號
     x1 = r.join(""); //陣列轉字串
     x1 = parseInt(x1); //字串轉數字
+    if(isNaN(x1)){
+      x1 = r.join("");
+      if(symTable[x1] === undefined){ //查symTable
+        symTable[x1] = symTop;
+        symTop++;
+      }
+      var v = symTable[x1];
+      v = parseInt(v); //字串轉數字
+      v = v.toString(2); //數字轉二進位字串
+      while(v.length < 16){ //補零用迴圈
+        v = "0" + v;
+      }
+      return c.log(v);
+    }
+    else
     x1 = x1.toString(2); //數字轉二進位字串
-    while(x1.length < 16){ //補零迴圈
+    while(x1.length < 16){ //補零用迴圈
       x1 = "0" + x1;
     }
     return c.log(x1);
@@ -149,7 +177,7 @@ function insC(r){ //C指令
   if(r[1] == "="){
     r1 = r.join("");
     r2 = r1.split("="); //用"="分隔結果並放入陣列
-    //c.log(r2);//檢查用
+    //c.log(r2); //檢查用
     var x2 = "111" + ctable[r2[1]] + dtable[r2[0]] + "000";
     return c.log(x2);
   }
@@ -161,20 +189,6 @@ function insC(r){ //C指令
   }
 }
 
-var symTop = 16; // 新的變數從 16 開始，前 15 個為預設指令
-var symlocation = 0;
-
-function addSymbol(symbol) {  // 增加變數
-  symTable[symbol] = symTop; // 將新的變數放進 symTable 裡面
-  symTop ++; 
-}
-
 function sym(r) {
-  if (line[0] == "(") {
-    line.match(/^\(([^\)]+)\)$/);
-    var word = RegExp.$1;
-    symTable[word] = symlocation;
-  }
-  else
   symlocation++;
 }
