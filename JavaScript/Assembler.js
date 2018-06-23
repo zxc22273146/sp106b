@@ -151,7 +151,7 @@ function assemble(asmFile, objFile){ // 主程式
     count++;
   }
   c.log(" ");
-  c.log("------符號表中新增了 "+sym+" 個符號------")
+  c.log("------符號表新增了 "+sym+" 個符號------")
 }
 
 function insA(r){ // A指令
