@@ -1,3 +1,4 @@
+// 作者為馮志揚 2018/06/23
 var fs = require("fs"); // 讀檔
 var c  = console;
 var file = process.argv[2];
@@ -84,16 +85,16 @@ var symTable = {
 var newsym = 16; // 新的符號從位置16開始
 var sym = 0; // 記住新增幾個符號
 
-assemble(file+'.asm', file+'.hack'); // 開檔案
+assemble(file+'.asm',file+'.hack'); // 開檔案
 
-function assemble(asmFile, objFile){ // 主程式
-  var asmText = fs.readFileSync(asmFile, "utf8");
-                          
+function assemble(asmFile,objFile){ // 主程式
+  var asmText = fs.readFileSync(asmFile,"utf8");
   var lines = asmText.split(/\r?\n/);
-  // var sss = JSON.stringify(lines, null, 2);
-  // c.log(sss); // 這2行用途是印出全部內容
-  var x = lines.join(" "); // 將文字檔用空白符號分隔
-  // c.log(x); // 檢查用
+
+  /*var sss = JSON.stringify(lines, null, 2);
+  c.log(sss);*/ //印出檔案全部內容
+
+  var x = lines.join(" "); // 將陣列變成用空白符號分隔的字串，如"[a,b,c]"->"a b c"
   var count = 0;
 
   while(count<x.length){
@@ -109,7 +110,7 @@ function assemble(asmFile, objFile){ // 主程式
     }
     else if(x[count] == "A" || x[count] == "D" || x[count] == "M"){
       if(x[count+1] == "=" || x[count+2] == "=" || x[count+1] == ";"){
-        r.push(x[count]);
+        r.push(x[count]);                              // D=A或MD=M-1或D;JGT
         r.push(x[count+1]);
         count++;
         while(x[count+1] != " " && count<x.length){
@@ -119,7 +120,7 @@ function assemble(asmFile, objFile){ // 主程式
         insC(r);
       }
     }
-    else if(x[count] == "0"){ // 0;JMP指令
+    else if(x[count] == "0"){ // 0;JMP
       if(x[count+1] == "=" || x[count+1] == ";"){
         r.push(x[count]);
         r.push(x[count+1]);
@@ -131,7 +132,7 @@ function assemble(asmFile, objFile){ // 主程式
         insC(r);
       }
     }
-    else if(x[count] == "("){
+    else if(x[count] == "("){ // 消除括號內容
       while(x[count+1] != ")"){
         r.push(x[count+1]);
         count++;
@@ -159,10 +160,11 @@ function insA(r){ // A指令
     var n = r.shift(); // 移除陣列中的"@"符號
     x1 = r.join(""); // 陣列轉字串
     x1 = parseInt(x1); // 字串轉數字
-    if(isNaN(x1)){
+
+    if(isNaN(x1)){ // 利用isNaN()判斷"@"後面接的是否是數字
       x1 = r.join("");
       if(symTable[x1] === undefined){ // 查symTable
-        symTable[x1] = newsym;
+        symTable[x1] = newsym; // 在字典新增
         newsym++;
         sym++;
       }
@@ -174,7 +176,8 @@ function insA(r){ // A指令
       }
       return c.log(v);
     }
-    else
+
+    else // 當"@"後面是數字時執行這段
     x1 = x1.toString(2); // 數字轉二進位字串
     while(x1.length < 16){ // 補零用迴圈
       x1 = "0" + x1;
@@ -186,14 +189,13 @@ function insC(r){ // C指令
   c.log(r.join(""));
   if(r[1] == "=" || r[2] == "="){
     r1 = r.join("");
-    r2 = r1.split("="); // 用"="分隔結果並放入陣列
-    // c.log(r2); // 檢查用
+    r2 = r1.split("="); // 用"="分隔字串內容並放入陣列
     var x2 = "111" + ctable[r2[1]] + dtable[r2[0]] + "000";
-    return c.log(x2);
+    return c.log(x2); // 指令形式為"111 ccccccc ddd jjj"
   }
   else if(r[1] == ";"){ // 跳躍指令
     r1 = r.join("");
-    r2 = r1.split(";"); // 用";"分隔結果並放入陣列
+    r2 = r1.split(";"); // 用";"分隔字串內容並放入陣列
     var x2 = "111" + ctable[r2[0]] + "000" + jtable[r2[1]];
     return c.log(x2);
   }
