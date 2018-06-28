@@ -1,4 +1,4 @@
-// 作者為馮志揚 2018/06/23
+// 作者為馮志揚 2018/06/23，此版本為錯誤版本
 var fs = require("fs");
 var c  = console;
 var file = process.argv[2];
