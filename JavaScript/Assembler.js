@@ -107,9 +107,7 @@ function assemble(asmFile){ // 主程式
     else if(x[count] == "A" || x[count] == "D" || x[count] == "M"){
       if(x[count+1] == "=" || x[count+2] == "=" || x[count+1] == ";"){
         r.push(x[count]);                              // D=A或MD=M-1或D;JGT
-        r.push(x[count+1]);
-        count++;
-        while(x[count+1] != " " && count<x.length){
+        while(x[count+1] != " "){
           r.push(x[count+1]);
           count++;
         }
@@ -119,9 +117,7 @@ function assemble(asmFile){ // 主程式
     else if(x[count] == "0"){ // 0;JMP
       if(x[count+1] == "=" || x[count+1] == ";"){
         r.push(x[count]);
-        r.push(x[count+1]);
-        count++;
-        while(x[count+1] != " " && count<x.length){
+        while(x[count+1] != " "){
           r.push(x[count+1]);
           count++;
         }

@@ -1,4 +1,4 @@
-程式碼筆記
+筆記
 var lines = asmText.split(/\r?\n/);
 
 將組合語言分割成一行一行
